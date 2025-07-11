@@ -7,6 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
+from lazypredict.Supervised import LazyClassifier
 
 df = pd.read_csv('data/diabetes.csv')
 # profile = ProfileReport(df, title="Diabetes Profiling Report", explorative=True)
@@ -44,24 +45,29 @@ X_test = scaler.fit_transform(X_test)
 # print("LR: ", metrics_lr)
 # print("RF: ", metrics_rf)
 
-params = {
-    # "max_depth": [3, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-    "criterion": ["gini", "entropy", "log_loss"],
-    "n_estimators": [10, 50, 100, 200, 300, 400, 500],
+# params = {
+#     # "max_depth": [3, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+#     "criterion": ["gini", "entropy", "log_loss"],
+#     "n_estimators": [10, 50, 100, 200, 300, 400, 500],
+#
+# }
+#
+# model_rf = GridSearchCV(
+#     estimator=RandomForestClassifier(
+#         random_state=42),
+#     param_grid=params,
+#     scoring='recall',
+#     cv=5, # cross validation
+#     verbose=3
+# )
+#
+# model_rf.fit(X_train, y_train)
+# print(model_rf.best_estimator_)
+# print(model_rf.best_score_)
+# print(model_rf.best_params_)
+#
+# print("Best score: ", classification_report(y_test, model_rf.predict(X_test)))
 
-}
-
-model_rf = GridSearchCV(
-    estimator=RandomForestClassifier(
-        random_state=42),
-    param_grid=params,
-    cv=5, # cross validation
-    verbose=3
-)
-
-model_rf.fit(X_train, y_train)
-print(model_rf.best_estimator_)
-print(model_rf.best_score_)
-print(model_rf.best_params_)
-
-print("Best score: ", classification_report(y_test, model_rf.predict(X_test)))
+clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=None)
+models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+print(models)
